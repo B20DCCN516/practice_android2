@@ -61,7 +61,6 @@ public class FragmentHome extends Fragment implements MusicAdapter.ItemListener{
         musicAdapter.setMusics(musics);
         musicAdapter.setListener(this);
         recyclerView.setAdapter(musicAdapter);
-
     }
 
     @Override

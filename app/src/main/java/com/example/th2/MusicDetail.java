@@ -79,8 +79,6 @@ public class MusicDetail extends AppCompatActivity implements View.OnClickListen
             currentMusic = (Music) intent.getSerializableExtra("music");
             setData();
         }
-
-
     }
 
     public void setData() {

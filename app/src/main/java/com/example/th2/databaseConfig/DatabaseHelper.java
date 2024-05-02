@@ -9,6 +9,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 import androidx.annotation.Nullable;
 
 import com.example.th2.models.Music;
+import com.example.th2.models.MusicStat;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -130,5 +131,19 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public boolean deleteMusic(int id) {
         SQLiteDatabase db = this.getWritableDatabase();
         return db.delete("Music", "id = ?", new String[]{String.valueOf(id)}) > 0;
+    }
+
+    public List<MusicStat> getSongsCountByType() {
+        List<MusicStat> resultList = new ArrayList<>();
+        SQLiteDatabase db = this.getReadableDatabase();
+        String query = "SELECT type, COUNT(*) as count FROM music GROUP BY type ORDER BY count DESC";
+        Cursor cursor = db.rawQuery(query, null);
+        while (cursor != null && cursor.moveToNext()) {
+            @SuppressLint("Range") MusicStat musicStat = new MusicStat(cursor.getString(cursor.getColumnIndex("type")),Integer.parseInt(cursor.getString(cursor.getColumnIndex("count"))));
+            resultList.add(musicStat);
+        }
+        cursor.close();
+        db.close();
+        return resultList;
     }
 }
