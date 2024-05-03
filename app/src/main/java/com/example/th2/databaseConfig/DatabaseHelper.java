@@ -133,18 +133,5 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return db.delete("Work", "id = ?", new String[]{String.valueOf(id)}) > 0;
     }
 
-    public List<WorkStat> getSongsCountByType(String searchText) {
-        List<WorkStat> resultList = new ArrayList<>();
-        SQLiteDatabase db = this.getReadableDatabase();
-        String query = "SELECT status, COUNT(*) as count FROM Work WHERE name LIKE ? OR description LIKE ? GROUP BY status ORDER BY count DESC";
-        String[] args = {"%" + searchText + "%", "%" + searchText + "%"};
-        Cursor cursor = db.rawQuery(query, args);
-        while (cursor != null && cursor.moveToNext()) {
-            @SuppressLint("Range") WorkStat musicStat = new WorkStat(cursor.getString(cursor.getColumnIndex("status")),Integer.parseInt(cursor.getString(cursor.getColumnIndex("count"))));
-            resultList.add(musicStat);
-        }
-        cursor.close();
-        db.close();
-        return resultList;
-    }
+
 }

@@ -29,7 +29,6 @@ public class FragmentSearch extends Fragment implements SearchView.OnQueryTextLi
 
     private WorkAdapter musicAdapter;
 
-    TextView statView;
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -46,7 +45,6 @@ public class FragmentSearch extends Fragment implements SearchView.OnQueryTextLi
     public void initView(View view) {
         searchView = view.findViewById(R.id.fr_search_searchView);
         recyclerView = view.findViewById(R.id.fr_search_recycler);
-        statView = view.findViewById(R.id.workStat);
     }
 
     public void setup() {
@@ -71,13 +69,6 @@ public class FragmentSearch extends Fragment implements SearchView.OnQueryTextLi
         List<Work> musics = db.searhByNameOrDes(s);
         musicAdapter.setMusics(musics);
 
-        List<WorkStat> stats = db.getSongsCountByType(s);
-        statView.setText("");
-        String msg = "";
-        for(WorkStat workStat : stats) {
-            msg+= workStat.getType() +": "+workStat.getNumber() +" công việc\n";
-        }
-        statView.setText(msg);
         return false;
     }
 
