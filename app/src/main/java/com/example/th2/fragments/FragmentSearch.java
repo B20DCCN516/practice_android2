@@ -5,6 +5,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.SearchView;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -13,9 +14,10 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.th2.R;
-import com.example.th2.adapter.MusicAdapter;
+import com.example.th2.adapter.WorkAdapter;
 import com.example.th2.databaseConfig.DatabaseHelper;
-import com.example.th2.models.Music;
+import com.example.th2.models.Work;
+import com.example.th2.models.WorkStat;
 
 import java.util.List;
 
@@ -25,7 +27,9 @@ public class FragmentSearch extends Fragment implements SearchView.OnQueryTextLi
     private RecyclerView recyclerView;
     private SearchView searchView;
 
-    private MusicAdapter musicAdapter;
+    private WorkAdapter musicAdapter;
+
+    TextView statView;
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -42,14 +46,15 @@ public class FragmentSearch extends Fragment implements SearchView.OnQueryTextLi
     public void initView(View view) {
         searchView = view.findViewById(R.id.fr_search_searchView);
         recyclerView = view.findViewById(R.id.fr_search_recycler);
+        statView = view.findViewById(R.id.workStat);
     }
 
     public void setup() {
         db = DatabaseHelper.gI(getContext());
-        musicAdapter = new MusicAdapter(getContext());
+        musicAdapter = new WorkAdapter(getContext());
         LinearLayoutManager layoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
         recyclerView.setLayoutManager(layoutManager);
-        List<Music> musics = db.getAllMusic();
+        List<Work> musics = db.getAllWork();
         musicAdapter.setMusics(musics);
         recyclerView.setAdapter(musicAdapter);
         searchView.setOnQueryTextListener(this);
@@ -63,8 +68,18 @@ public class FragmentSearch extends Fragment implements SearchView.OnQueryTextLi
 
     @Override
     public boolean onQueryTextChange(String s) {
-        List<Music> musics = db.searhByNameOrAlbum(s);
+        List<Work> musics = db.searhByNameOrDes(s);
         musicAdapter.setMusics(musics);
+
+        List<WorkStat> stats = db.getSongsCountByType(s);
+        statView.setText("");
+        String msg = "";
+        for(WorkStat workStat : stats) {
+            msg+= workStat.getType() +": "+workStat.getNumber() +" công việc\n";
+        }
+        statView.setText(msg);
         return false;
     }
+
+
 }

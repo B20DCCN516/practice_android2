@@ -14,19 +14,19 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.th2.MusicDetail;
 import com.example.th2.R;
-import com.example.th2.adapter.MusicAdapter;
+import com.example.th2.adapter.WorkAdapter;
 import com.example.th2.constant.Constant;
 import com.example.th2.databaseConfig.DatabaseHelper;
-import com.example.th2.models.Music;
+import com.example.th2.models.Work;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.List;
 
-public class FragmentHome extends Fragment implements MusicAdapter.ItemListener{
+public class FragmentHome extends Fragment implements WorkAdapter.ItemListener{
     private FloatingActionButton floatingActionButton;
     private RecyclerView recyclerView;
 
-    private MusicAdapter musicAdapter;
+    private WorkAdapter musicAdapter;
 
     private DatabaseHelper db;
     @Nullable
@@ -56,8 +56,8 @@ public class FragmentHome extends Fragment implements MusicAdapter.ItemListener{
         recyclerView = view.findViewById(R.id.fr_home_recycler);
         LinearLayoutManager layoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
         recyclerView.setLayoutManager(layoutManager);
-        musicAdapter = new MusicAdapter(getContext());
-        List<Music> musics = db.getAllMusic();
+        musicAdapter = new WorkAdapter(getContext());
+        List<Work> musics = db.getAllWork();
         musicAdapter.setMusics(musics);
         musicAdapter.setListener(this);
         recyclerView.setAdapter(musicAdapter);
@@ -66,15 +66,15 @@ public class FragmentHome extends Fragment implements MusicAdapter.ItemListener{
     @Override
     public void onResume() {
         super.onResume();
-        List<Music> musics = db.getAllMusic();
+        List<Work> musics = db.getAllWork();
         musicAdapter.setMusics(musics);
     }
 
     @Override
     public void onItemClick(View view, int position) {
-        Music music = musicAdapter.getItem(position);
+        Work music = musicAdapter.getItem(position);
         Intent intentDetail = new Intent(getActivity(),MusicDetail.class);
-        intentDetail.putExtra("music",music);
+        intentDetail.putExtra("work",music);
         intentDetail.putExtra("status",Constant.EDIT);
         startActivity(intentDetail);
 

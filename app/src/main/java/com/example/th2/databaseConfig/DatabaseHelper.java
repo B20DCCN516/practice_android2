@@ -6,16 +6,14 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
-import androidx.annotation.Nullable;
-
-import com.example.th2.models.Music;
-import com.example.th2.models.MusicStat;
+import com.example.th2.models.Work;
+import com.example.th2.models.WorkStat;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class DatabaseHelper extends SQLiteOpenHelper {
-    private static final String DATABASE_NAME = "th2.db";
+    private static final String DATABASE_NAME = "practice2.db";
     private static final int DATABASE_VERSION = 1;
 
     private static DatabaseHelper instance;
@@ -32,15 +30,14 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-        String CREATE_MUSIC_TABLE =
-                "CREATE TABLE IF NOT EXISTS Music (" +
-                        "id INTEGER PRIMARY KEY AUTOINCREMENT, " +
-                        "name TEXT NOT NULL, " +
-                        "singer TEXT, " +
-                        "album TEXT, " +
-                        "type TEXT, " +
-                        "isLike INTEGER DEFAULT 0)";
-        db.execSQL(CREATE_MUSIC_TABLE);
+        String CREATE_WORK_TABLE = "CREATE TABLE IF NOT EXISTS Work (" +
+                "id INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                "name TEXT NOT NULL, " +
+                "description TEXT, " +
+                "dateDone TEXT, " +
+                "status TEXT, " +
+                "isCongTac INTEGER DEFAULT 0)";
+        db.execSQL(CREATE_WORK_TABLE);
     }
 
     @Override
@@ -48,65 +45,68 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     }
 
-    public List<Music> getAllMusic() {
-        List<Music> musicList = new ArrayList<>();
-        // Câu lệnh SQL để lấy tất cả bản nhạc
-        String selectQuery = "SELECT * FROM Music";
+    public List<Work> getAllWork() {
+        List<Work> workList = new ArrayList<>();
+        // Câu lệnh SQL để lấy tất cả công việc
+        String selectQuery = "SELECT * FROM Work";
 
-        SQLiteDatabase db = this.getWritableDatabase();
+        SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = db.rawQuery(selectQuery, null);
 
-        // Duyệt qua tất cả các hàng và thêm vào danh sách
-        while (cursor!= null && cursor.moveToNext()) {
-            @SuppressLint("Range")
-                    Music music = new Music(
-                    cursor.getInt(cursor.getColumnIndex("id")),
-                    cursor.getString(cursor.getColumnIndex("name")),
-                    cursor.getString(cursor.getColumnIndex("singer")),
-                    cursor.getString(cursor.getColumnIndex("album")),
-                    cursor.getString(cursor.getColumnIndex("type")),
-                    cursor.getInt(cursor.getColumnIndex("isLike")) == 1  // Convert integer to boolean
-            );
-            musicList.add(music);
+        if (cursor != null && cursor.moveToFirst()) {  // Đảm bảo cursor không rỗng và có dữ liệu
+            do {
+                // Tạo đối tượng Work từ dữ liệu truy vấn
+                @SuppressLint("Range") Work work = new Work(
+                        cursor.getInt(cursor.getColumnIndex("id")),
+                        cursor.getString(cursor.getColumnIndex("name")),
+                        cursor.getString(cursor.getColumnIndex("description")),
+                        cursor.getString(cursor.getColumnIndex("dateDone")),
+                        cursor.getString(cursor.getColumnIndex("status")),
+                        cursor.getInt(cursor.getColumnIndex("isCongTac")) == 1  // Chuyển đổi integer thành boolean
+                );
+                workList.add(work);
+            } while (cursor.moveToNext());
         }
-        cursor.close();
-        db.close();
-        return musicList;
+        if (cursor != null) {
+            cursor.close();  // Đóng cursor để tránh rò rỉ bộ nhớ
+        }
+        db.close();  // Đóng cơ sở dữ liệu
+        return workList;
     }
-    public boolean addMusic(Music music) {
+    public boolean addMusic(Work music) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
         values.put("name", music.getName());
-        values.put("singer", music.getSinger());
-        values.put("album", music.getAlbum());
-        values.put("type", music.getType());
-        values.put("isLike", music.isLike() ? 1 : 0);  // Convert boolean to integer
+        values.put("description", music.getDescription());
+        values.put("dateDone", music.getDateDone());
+        values.put("status", music.getStatus());
+        values.put("isCongTac", music.isCongTac() ? 1 : 0);  // Convert boolean to integer
 
         // Thêm một bản ghi mới và trả về ID của bản ghi đó
 
-        long id = db.insert("Music", null, values);
+        long id = db.insert("Work", null, values);
         db.close();
         return id != -1;
     }
-    public boolean updateMusic(Music music) {
+    public boolean updateMusic(Work music) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
         values.put("name", music.getName());
-        values.put("singer", music.getSinger());
-        values.put("album", music.getAlbum());
-        values.put("type", music.getType());
-        values.put("isLike", music.isLike() ? 1 : 0);
+        values.put("description", music.getDescription());
+        values.put("dateDone", music.getDateDone());
+        values.put("status", music.getStatus());
+        values.put("isCongTac", music.isCongTac() ? 1 : 0);  // Convert boolean to integer
 
         // Cập nhật bản ghi và trả về số hàng bị ảnh hưởng
-        int rowsAffected = db.update("Music", values, "id = ?", new String[] { String.valueOf(music.getId()) });
+        int rowsAffected = db.update("Work", values, "id = ?", new String[] { String.valueOf(music.getId()) });
         db.close();  // Đóng cơ sở dữ liệu sau khi thao tác
         return rowsAffected != 0;
     }
 
-    public List<Music> searhByNameOrAlbum(String searchQuery) {
-        List<Music> musicList = new ArrayList<>();
+    public List<Work> searhByNameOrDes(String searchQuery) {
+        List<Work> musicList = new ArrayList<>();
         // Câu lệnh SQL để lấy tất cả bản nhạc
-        String selectQuery = "SELECT * FROM Music WHERE name LIKE ? OR album LIKE ?";
+        String selectQuery = "SELECT * FROM Work WHERE name LIKE ? OR description LIKE ? ORDER BY dateDone DESC";
         String[] args = {"%" + searchQuery + "%", "%" + searchQuery + "%"};
         SQLiteDatabase db = this.getWritableDatabase();
         Cursor cursor = db.rawQuery(selectQuery, args);
@@ -114,13 +114,13 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         // Duyệt qua tất cả các hàng và thêm vào danh sách
         while (cursor!= null && cursor.moveToNext()) {
             @SuppressLint("Range")
-            Music music = new Music(
+            Work music = new Work(
                     cursor.getInt(cursor.getColumnIndex("id")),
                     cursor.getString(cursor.getColumnIndex("name")),
-                    cursor.getString(cursor.getColumnIndex("singer")),
-                    cursor.getString(cursor.getColumnIndex("album")),
-                    cursor.getString(cursor.getColumnIndex("type")),
-                    cursor.getInt(cursor.getColumnIndex("isLike")) == 1  // Convert integer to boolean
+                    cursor.getString(cursor.getColumnIndex("description")),
+                    cursor.getString(cursor.getColumnIndex("dateDone")),
+                    cursor.getString(cursor.getColumnIndex("status")),
+                    cursor.getInt(cursor.getColumnIndex("isCongTac")) == 1 ? true : false  // Convert integer to boolean
             );
             musicList.add(music);
         }
@@ -130,16 +130,17 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     }
     public boolean deleteMusic(int id) {
         SQLiteDatabase db = this.getWritableDatabase();
-        return db.delete("Music", "id = ?", new String[]{String.valueOf(id)}) > 0;
+        return db.delete("Work", "id = ?", new String[]{String.valueOf(id)}) > 0;
     }
 
-    public List<MusicStat> getSongsCountByType() {
-        List<MusicStat> resultList = new ArrayList<>();
+    public List<WorkStat> getSongsCountByType(String searchText) {
+        List<WorkStat> resultList = new ArrayList<>();
         SQLiteDatabase db = this.getReadableDatabase();
-        String query = "SELECT type, COUNT(*) as count FROM music GROUP BY type ORDER BY count DESC";
-        Cursor cursor = db.rawQuery(query, null);
+        String query = "SELECT status, COUNT(*) as count FROM Work WHERE name LIKE ? OR description LIKE ? GROUP BY status ORDER BY count DESC";
+        String[] args = {"%" + searchText + "%", "%" + searchText + "%"};
+        Cursor cursor = db.rawQuery(query, args);
         while (cursor != null && cursor.moveToNext()) {
-            @SuppressLint("Range") MusicStat musicStat = new MusicStat(cursor.getString(cursor.getColumnIndex("type")),Integer.parseInt(cursor.getString(cursor.getColumnIndex("count"))));
+            @SuppressLint("Range") WorkStat musicStat = new WorkStat(cursor.getString(cursor.getColumnIndex("status")),Integer.parseInt(cursor.getString(cursor.getColumnIndex("count"))));
             resultList.add(musicStat);
         }
         cursor.close();

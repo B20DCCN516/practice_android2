@@ -41,6 +41,11 @@ public class ViewPagerAdapter extends FragmentStatePagerAdapter {
 //    @Nullable
 //    @Override
 //    public CharSequence getPageTitle(int position) {
-//        return super.getPageTitle(position);
+//        switch (position) {
+//            case 0:return "Home";
+//            case 1: return "Thông tin";
+//            case 2: return "Tìm kiếm";
+//        }
+//        return "";
 //    }
 }

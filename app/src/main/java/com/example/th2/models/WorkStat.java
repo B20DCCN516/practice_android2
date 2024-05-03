@@ -1,13 +1,13 @@
 package com.example.th2.models;
 
-public class MusicStat {
+public class WorkStat {
     private String type;
     private int number;
 
-    public MusicStat() {
+    public WorkStat() {
     }
 
-    public MusicStat(String type, int number) {
+    public WorkStat(String type, int number) {
         this.type = type;
         this.number = number;
     }

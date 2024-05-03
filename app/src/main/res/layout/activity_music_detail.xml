@@ -11,7 +11,6 @@
         android:id="@+id/detail_title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Bài hát"
         android:textStyle="bold"
         android:textSize="22dp"
         android:gravity="center"
@@ -22,7 +21,7 @@
         android:id="@+id/detail_name"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Nhập tên bài hát"
+        android:hint="Nhập tên công việc"
         android:background="@drawable/border_radius"
         android:backgroundTint="#c8d6e5"
         android:padding="10dp"
@@ -31,10 +30,11 @@
         android:textSize="15dp"
         />
     <EditText
-        android:id="@+id/detail_singer_name"
+        android:id="@+id/detail_description"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Nhập tên ca sỹ"
+        android:hint="Nhập nội dung công việc"
+        android:inputType="textMultiLine"
         android:background="@drawable/border_radius"
         android:backgroundTint="#c8d6e5"
         android:padding="10dp"
@@ -43,38 +43,31 @@
         android:layout_marginTop="15dp"
         android:textSize="15dp"
         />
-    <TextView
+    <EditText
+        android:id="@+id/detail_dateDone"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Album"
-        android:textSize="15dp"
-        android:layout_marginLeft="12dp"
-        android:layout_marginTop="10dp"
-        android:layout_marginBottom="10dp"
-        />
-    <Spinner
-        android:id="@+id/spin_album"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:hint="Ngày hoàn thành"
+        android:focusable="false"
         android:background="@drawable/border_radius"
         android:backgroundTint="#c8d6e5"
         android:padding="10dp"
         android:layout_marginLeft="10dp"
         android:layout_marginRight="10dp"
         android:textSize="15dp"
-
+        android:layout_marginTop="15dp"
         />
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Thể loại"
+        android:text="Tình trạng"
         android:textSize="15dp"
         android:layout_marginLeft="12dp"
         android:layout_marginTop="10dp"
         android:layout_marginBottom="10dp"
         />
     <Spinner
-        android:id="@+id/spin_type"
+        android:id="@+id/spin_status"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@drawable/border_radius"
@@ -88,7 +81,7 @@
         android:id="@+id/checkIsLike"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Yêu thích"
+        android:text="Cộng tác"
         android:layout_marginLeft="10dp"
         android:layout_marginTop="15dp"
         />
@@ -137,6 +130,5 @@
             android:minWidth="100dp"
             android:textSize="15dp"
             />
-
     </LinearLayout>
 </LinearLayout>

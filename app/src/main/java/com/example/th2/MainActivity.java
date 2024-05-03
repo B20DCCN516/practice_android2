@@ -6,15 +6,19 @@ import androidx.viewpager.widget.ViewPager;
 
 import android.os.Bundle;
 import android.view.MenuItem;
+import android.widget.TableLayout;
 
 import com.example.th2.adapter.ViewPagerAdapter;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.android.material.tabs.TabLayout;
 
 public class MainActivity extends AppCompatActivity {
 
     private ViewPager viewPager;
     private BottomNavigationView bottomNavigationView;
     private ViewPagerAdapter viewPagerAdapter;
+
+//    private TabLayout tabLayout;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -23,10 +27,14 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void init() {
+
         viewPager = findViewById(R.id.viewPager);
         bottomNavigationView = findViewById(R.id.bottomNavigation);
         viewPagerAdapter = new ViewPagerAdapter(getSupportFragmentManager(),3);
         viewPager.setAdapter(viewPagerAdapter);
+
+//        tabLayout = findViewById(R.id.tablayout);
+//        tabLayout.setupWithViewPager(viewPager);
 
         viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
@@ -69,4 +77,9 @@ public class MainActivity extends AppCompatActivity {
             }
         });
     }
+//    public void setuptablayoutIcon() {
+//        tabLayout.getTabAt(0).setIcon(R.drawable.icon_home);
+//        tabLayout.getTabAt(1).setIcon(R.drawable.icon_inf);
+//        tabLayout.getTabAt(2).setIcon(R.drawable.icon_search);
+//    }
 }
